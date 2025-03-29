@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import html2pdf from "html2pdf.js";
+import { useTranslation } from "react-i18next";
 
 const PreviewResume = () => {
+  const { t } = useTranslation(); // 添加这行
   const navigate = useNavigate();
   const resumeRef = useRef(null); // 添加这行来定义 resumeRef
   const [formData, setFormData] = useState(null);
@@ -252,17 +255,17 @@ const PreviewResume = () => {
               {/* Contact Info Box */}
               <div className="border-2 border-gray-200 rounded-lg p-4">
                 <h2 className="text-xl font-bold text-gray-800 mb-4">
-                  Contact
+                  {t("contact")}
                 </h2>
                 <div className="space-y-3">
                   <div>
-                    <h3 className="font-bold text-gray-700">Email</h3>
+                    <h3 className="font-bold text-gray-700">{t("email")}: </h3>
                     <p className="text-gray-600">
                       {formData.personalInfo?.email}
                     </p>
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-700">Phone</h3>
+                    <h3 className="font-bold text-gray-700">{t("phone")}: </h3>
                     <p className="text-gray-600">
                       {formData.personalInfo?.phone}
                     </p>
@@ -273,7 +276,7 @@ const PreviewResume = () => {
               {/* Profile Section (will be added to form later) */}
               <div className="w-full">
                 <h2 className="text-xl font-bold text-gray-800 mb-3">
-                  Profile
+                  {t("profile")}
                 </h2>
                 <div className="w-full overflow-hidden">
                   <p className="text-gray-600 whitespace-pre-wrap break-words max-w-full pr-2 text-left">
@@ -290,20 +293,22 @@ const PreviewResume = () => {
               {formData.education && formData.education.length > 0 && (
                 <div className="mb-6">
                   <h2 className="text-2xl font-bold text-gray-900 border-b-2 border-gray-300 pb-2 mb-4">
-                    Education
+                    {t("education")}
                   </h2>
                   {formData.education.map((edu, index) => (
                     <div key={index} className="mb-4">
                       <div className="flex justify-between items-baseline">
                         <h3 className="text-xl font-semibold text-gray-800">
-                          {edu.school}
+                          {t("school")}: {edu.school}
                         </h3>
                         <span className="text-gray-600 font-medium">
-                          {edu.startDate} - {edu.endDate}
+                          {t("start_date")}: {edu.startDate} - {t("end_date")}:{" "}
+                          {edu.endDate}
                         </span>
                       </div>
                       <div className="text-lg text-gray-700 font-medium mt-1 text-left">
-                        {edu.degree} {edu.field && `in ${edu.field}`}
+                        {t("degree")}: {edu.degree} {t("field_of_study")}:{" "}
+                        {edu.field && `in ${edu.field}`}
                       </div>
                     </div>
                   ))}
@@ -314,20 +319,22 @@ const PreviewResume = () => {
               {formData.experience && formData.experience.length > 0 && (
                 <div className="mb-6">
                   <h2 className="text-2xl font-bold text-gray-900 border-b-2 border-gray-300 pb-2 mb-4">
-                    Professional Experience
+                    {t("professional_experience")}
                   </h2>
                   {formData.experience.map((exp, index) => (
                     <div key={index} className="mb-6">
                       <div className="flex justify-between items-baseline">
                         <h3 className="text-xl font-semibold text-gray-800">
-                          {exp.company}
+                          {t("company")}: {exp.company}
                         </h3>
                         <span className="text-gray-600 font-medium">
-                          {exp.startDate} - {exp.endDate}
+                          {t("start_date")}: {exp.startDate} - {t("end_date")}:{" "}
+                          {exp.endDate}
                         </span>
                       </div>
                       <div className="text-lg text-gray-700 font-medium mt-1 text-left">
-                        {exp.position} {exp.location && `• ${exp.location}`}
+                        {t("role")}: {exp.position}{" "}
+                        {exp.location && `• ${exp.location}`}
                       </div>
                       {exp.description && (
                         <ul className="list-disc list-inside text-gray-700 mt-2 space-y-1">
@@ -350,16 +357,17 @@ const PreviewResume = () => {
               {formData.projects && formData.projects.length > 0 && (
                 <div className="mb-6">
                   <h2 className="text-2xl font-bold text-gray-900 border-b-2 border-gray-300 pb-2 mb-4">
-                    Projects
+                    {t("projects_and_extracurricular")}
                   </h2>
                   {formData.projects.map((project, index) => (
                     <div key={index} className="mb-6">
                       <div className="flex justify-between items-baseline">
                         <h3 className="text-xl font-semibold text-gray-800">
-                          {project.title}
+                          {t("project_title")}: {project.title}
                         </h3>
                         <span className="text-gray-600 font-medium">
-                          {project.startDate} - {project.endDate}
+                          {t("start_date")}: {project.startDate} -{" "}
+                          {t("end_date")}: {project.endDate}
                         </span>
                       </div>
                       {project.description && (
@@ -383,7 +391,7 @@ const PreviewResume = () => {
               {formData.skills && formData.skills.length > 0 && (
                 <div className="mb-6">
                   <h2 className="text-2xl font-bold text-gray-900 border-b-2 border-gray-300 pb-2 mb-4">
-                    Skills
+                    {t("skills")}
                   </h2>
                   <div className="flex flex-wrap gap-2">
                     {formData.skills.map((skill, index) => (
@@ -405,15 +413,21 @@ const PreviewResume = () => {
         <div className="mt-8 flex justify-end space-x-4">
           <button
             onClick={() => navigate("/create-resume")}
-            className="px-6 py-2 bg-white text-gray-700 border-2 border-gray-300 rounded hover:bg-gray-100"
+            className="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50"
           >
-            Back to Edit
+            {t("back_to_edit")}
+          </button>
+          <button
+            onClick={() => navigate("/create-cover-letter")}
+            className="px-4 py-2 border border-blue-500 rounded text-blue-600 hover:bg-blue-50"
+          >
+            {t("create_cover_letter")}
           </button>
           <button
             onClick={handleGenerateResume}
-            className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           >
-            Generate PDF
+            {t("generate_pdf")}
           </button>
         </div>
       </div>

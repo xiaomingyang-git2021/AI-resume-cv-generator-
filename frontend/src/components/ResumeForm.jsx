@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const ResumeForm = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     personalInfo: {
@@ -45,6 +47,28 @@ const ResumeForm = () => {
     },
     skills: [],
   });
+
+  // 添加这个 useEffect
+  useEffect(() => {
+    const savedData = localStorage.getItem("resumeFormData"); // 改成 resumeFormData
+
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData);
+        // 直接设置解析后的数据，因为它已经有正确的结构
+        setFormData({
+          personalInfo: parsedData.personalInfo,
+          education: parsedData.education,
+          experience: parsedData.experience,
+          projects: parsedData.projects,
+          extracurricular: parsedData.extracurricular,
+          skills: parsedData.skills,
+        });
+      } catch (error) {
+        console.error("Error loading form data:", error);
+      }
+    }
+  }, []);
 
   const [errors, setErrors] = useState({});
 
@@ -186,7 +210,7 @@ const ResumeForm = () => {
         <div className="bg-white shadow sm:rounded-lg">
           <div className="px-3 py-4 sm:px-6 sm:py-8">
             <h3 className="text-lg leading-6 font-medium text-gray-900">
-              Create Your Resume
+              {t("create_your_resume")}
             </h3>
             <form
               onSubmit={handleSubmit}
@@ -283,12 +307,12 @@ const ResumeForm = () => {
 
               <div className="mb-8">
                 <h2 className="text-xl font-semibold mb-4">
-                  Personal Information
+                  {t("personal_info")}
                 </h2>
                 <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Full Name *
+                  <div className="flex flex-col">
+                    <label className="text-sm font-medium text-gray-700 mb-1 text-left ml-0">
+                      {t("full_name")} *
                     </label>
                     <input
                       type="text"
@@ -300,10 +324,10 @@ const ResumeForm = () => {
                     />
                   </div>
 
-                  {/* New Job Title Field */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Job Title *
+                  {/* 对其他输入字段使用相同的结构 */}
+                  <div className="flex flex-col">
+                    <label className="text-sm font-medium text-gray-700 mb-1 text-left ml-0">
+                      {t("job_title")} *
                     </label>
                     <select
                       name="personalInfo.jobTitle"
@@ -312,33 +336,41 @@ const ResumeForm = () => {
                       className="w-full px-3 py-2 border border-gray-300 rounded-md"
                       required
                     >
-                      <option value="">Select a job title</option>
+                      <option value="">{t("select_job_title")}</option>
                       <option value="Full Stack Engineer">
-                        Full Stack Engineer
+                        {t("full_stack_engineer")}
                       </option>
                       <option value="Software Developer">
-                        Software Developer
+                        {t("software_developer")}
                       </option>
                       <option value="Marketing Manager">
-                        Marketing Manager
+                        {t("marketing_manager")}
                       </option>
-                      <option value="Project Manager">Project Manager</option>
-                      <option value="Data Analyst">Data Analyst</option>
-                      <option value="Graphic Designer">Graphic Designer</option>
+                      <option value="Project Manager">
+                        {t("project_manager")}
+                      </option>
+                      <option value="Data Analyst">{t("data_analyst")}</option>
+                      <option value="Graphic Designer">
+                        {t("graphic_designer")}
+                      </option>
                       <option value="Sales Representative">
-                        Sales Representative
+                        {t("sales_representative")}
                       </option>
-                      <option value="Business Analyst">Business Analyst</option>
+                      <option value="Business Analyst">
+                        {t("business_analyst")}
+                      </option>
                       <option value="Financial Analyst">
-                        Financial Analyst
+                        {t("financial_analyst")}
                       </option>
-                      <option value="Product Manager">Product Manager</option>
+                      <option value="Product Manager">
+                        {t("product_manager")}
+                      </option>
                     </select>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Email *
+                  <div className="flex flex-col">
+                    <label className="text-sm font-medium text-gray-700 mb-1 text-left ml-0">
+                      {t("email")} *
                     </label>
                     <input
                       type="email"
@@ -350,9 +382,9 @@ const ResumeForm = () => {
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Phone *
+                  <div className="flex flex-col">
+                    <label className="text-sm font-medium text-gray-700 mb-1 text-left ml-0">
+                      {t("phone")} *
                     </label>
                     <input
                       type="tel"
@@ -364,10 +396,9 @@ const ResumeForm = () => {
                     />
                   </div>
 
-                  {/* New Profile Field */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Profile
+                  <div className="flex flex-col">
+                    <label className="text-sm font-medium text-gray-700 mb-1 text-left ml-0">
+                      {t("profile")}
                     </label>
                     <textarea
                       name="personalInfo.profile"
@@ -375,7 +406,7 @@ const ResumeForm = () => {
                       onChange={handleChange}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md"
                       rows="4"
-                      placeholder="Write a brief professional summary..."
+                      placeholder={t("write_brief_summary")}
                     />
                   </div>
                 </div>
@@ -384,7 +415,7 @@ const ResumeForm = () => {
               {/* Education Section */}
               <div className="space-y-3 sm:space-y-4">
                 <h4 className="text-md font-medium text-gray-700 text-left">
-                  Education
+                  {t("education")}
                 </h4>
                 <div className="grid grid-cols-1 gap-3 sm:gap-4">
                   <div>
@@ -392,7 +423,7 @@ const ResumeForm = () => {
                       htmlFor="school"
                       className="block text-sm font-medium text-gray-700 text-left"
                     >
-                      School
+                      {t("school")}
                     </label>
                     <input
                       type="text"
@@ -412,7 +443,7 @@ const ResumeForm = () => {
                         htmlFor="degree"
                         className="block text-sm font-medium text-gray-700 text-left"
                       >
-                        Degree
+                        {t("degree")}
                       </label>
                       <input
                         type="text"
@@ -430,7 +461,7 @@ const ResumeForm = () => {
                         htmlFor="field"
                         className="block text-sm font-medium text-gray-700 text-left"
                       >
-                        Field of Study
+                        {t("field_of_study")}
                       </label>
                       <input
                         type="text"
@@ -450,7 +481,7 @@ const ResumeForm = () => {
                         htmlFor="startDate"
                         className="block text-sm font-medium text-gray-700 text-left"
                       >
-                        Start Date
+                        {t("start_date")}
                       </label>
                       <input
                         type="date"
@@ -473,7 +504,7 @@ const ResumeForm = () => {
                         htmlFor="endDate"
                         className="block text-sm font-medium text-gray-700 text-left"
                       >
-                        End Date
+                        {t("end_date")}
                       </label>
                       <input
                         type="date"
@@ -498,7 +529,7 @@ const ResumeForm = () => {
               {/* Professional Experience Section */}
               <div className="space-y-3 sm:space-y-4">
                 <h4 className="text-md font-medium text-gray-700 text-left">
-                  Professional Experience
+                  {t("professional_experience")}
                 </h4>
                 <div className="grid grid-cols-1 gap-3 sm:gap-4">
                   <div>
@@ -506,7 +537,7 @@ const ResumeForm = () => {
                       htmlFor="company"
                       className="block text-sm font-medium text-gray-700 text-left"
                     >
-                      Company
+                      {t("company")}
                     </label>
                     <input
                       type="text"
@@ -524,7 +555,7 @@ const ResumeForm = () => {
                       htmlFor="position"
                       className="block text-sm font-medium text-gray-700 text-left"
                     >
-                      Role
+                      {t("role")}
                     </label>
                     <input
                       type="text"
@@ -548,7 +579,7 @@ const ResumeForm = () => {
                         htmlFor="startDate"
                         className="block text-sm font-medium text-gray-700 text-left"
                       >
-                        Start Date
+                        {t("start_date")}
                       </label>
                       <input
                         type="date"
@@ -571,7 +602,7 @@ const ResumeForm = () => {
                         htmlFor="endDate"
                         className="block text-sm font-medium text-gray-700 text-left"
                       >
-                        End Date
+                        {t("end_date")}
                       </label>
                       <input
                         type="date"
@@ -596,7 +627,7 @@ const ResumeForm = () => {
               {/* Projects & Extracurricular Section */}
               <div className="space-y-3 sm:space-y-4">
                 <h4 className="text-md font-medium text-gray-700 text-left">
-                  Projects & Extracurricular
+                  {t("projects_and_extracurricular")}
                 </h4>
                 <div className="grid grid-cols-1 gap-3 sm:gap-4">
                   <div>
@@ -604,7 +635,7 @@ const ResumeForm = () => {
                       htmlFor="projectTitle"
                       className="block text-sm font-medium text-gray-700 text-left"
                     >
-                      Project Title
+                      {t("project_title")}
                     </label>
                     <input
                       type="text"
@@ -623,7 +654,7 @@ const ResumeForm = () => {
                         htmlFor="projectStartDate"
                         className="block text-sm font-medium text-gray-700 text-left"
                       >
-                        Start Date
+                        {t("start_date")}
                       </label>
                       <input
                         type="date"
@@ -646,7 +677,7 @@ const ResumeForm = () => {
                         htmlFor="projectEndDate"
                         className="block text-sm font-medium text-gray-700 text-left"
                       >
-                        End Date
+                        {t("end_date")}
                       </label>
                       <input
                         type="date"
@@ -665,7 +696,7 @@ const ResumeForm = () => {
                       htmlFor="activities"
                       className="block text-sm font-medium text-gray-700 text-left"
                     >
-                      Activities
+                      {t("activities")}
                     </label>
                     <textarea
                       name="activities"
@@ -688,7 +719,7 @@ const ResumeForm = () => {
                       htmlFor="leadership"
                       className="block text-sm font-medium text-gray-700 text-left"
                     >
-                      Leadership Experience
+                      {t("leadership_experience")}
                     </label>
                     <textarea
                       name="leadership"
@@ -712,14 +743,14 @@ const ResumeForm = () => {
               {/* Skills Section */}
               <div className="space-y-3 sm:space-y-4">
                 <h4 className="text-md font-medium text-gray-700 text-left">
-                  Skills
+                  {t("skills")}
                 </h4>
                 <div>
                   <label
                     htmlFor="skills"
                     className="block text-sm font-medium text-gray-700 text-left"
                   >
-                    Skills (comma separated)
+                    {t("skills_comma_separated")}
                   </label>
                   <input
                     type="text"
@@ -740,7 +771,7 @@ const ResumeForm = () => {
                   type="submit"
                   className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
-                  Next
+                  {t("next")}
                 </button>
               </div>
             </form>
